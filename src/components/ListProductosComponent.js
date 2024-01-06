@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductoService from "../services/ProductoService";
 import { Link } from "react-router-dom";
 
-export const ListProductosComponent = () => {
+const ListProductosComponent = () => {
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
@@ -36,27 +36,39 @@ export const ListProductosComponent = () => {
       <Link to="/add-producto" className="btn btn-primary mb-2">
         Agregar Producto
       </Link>
+      &nbsp;
+      <Link to="/categorias" className="btn btn-warning mb-2">
+        Ver Categorias
+      </Link>
+      &nbsp;
+      <Link to="/clientes" className="btn btn-success mb-2">
+        Ver Clientes
+      </Link>
+      &nbsp;
+      <Link to="/ventas" className="btn btn-secondary mb-2">
+        Ver Ventas
+      </Link>
       <table className="table table-bordered table-striped">
         <thead>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Acciones</th>
+          <th className="text-center">ID</th>
+          <th className="text-center">Nombre</th>
+          <th className="text-center">Descripción</th>
+          <th className="text-center">Categoría</th>
+          <th className="text-center">Precio</th>
+          <th className="text-center">Stock</th>
+          <th className="text-center">Acciones</th>
         </thead>
 
         <tbody>
           {productos.map((producto) => (
             <tr key={producto.id}>
-              <td>{producto.id}</td>
-              <td>{producto.nombre}</td>
-              <td>{producto.descripcion}</td>
-              <td>{producto.categoria}</td>
-              <td>{producto.precio}</td>
-              <td>{producto.stock}</td>
-              <td>
+              <td className="text-center">{producto.id}</td>
+              <td className="text-center">{producto.nombre}</td>
+              <td className="text-center">{producto.descripcion}</td>
+              <td className="text-center">{producto.categoria.descripcion}</td>
+              <td className="text-center">{producto.precio}</td>
+              <td className="text-center">{producto.stock}</td>
+              <td className="text-center">
                 <Link
                   className="btn btn-info"
                   to={`/edit-producto/${producto.id}`}

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ProductoService from "../services/ProductoService";
+import CategoriaService from "../services/CategoriaService";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 const AddProductoComponent = () => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [categorias, setCategoriasSelect] = useState(""); //Almacena todas las categorias registradas
   const [categoria, setCategoria] = useState("");
   const [precio, setPrecio] = useState("");
   const [stock, setStock] = useState("");
@@ -13,7 +15,17 @@ const AddProductoComponent = () => {
 
   const saveorUpdateProducto = (e) => {
     e.preventDefault();
-    const producto = { nombre, descripcion, categoria, precio, stock };
+
+    // Agrega estas declaraciones console.log
+    console.log("categoria:", categoria);
+
+    const producto = {
+      nombre,
+      descripcion,
+      categoria: { id: parseInt(categoria, 10) },
+      precio,
+      stock,
+    };
 
     if (id) {
       ProductoService.updateProducto(id, producto)
@@ -37,11 +49,22 @@ const AddProductoComponent = () => {
   };
 
   useEffect(() => {
+    CategoriaService.getAllCategorias()
+      .then((response) => {
+        setCategoriasSelect(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  // Esto es para cargar los datos del producto a editar
+  useEffect(() => {
     ProductoService.getProductoById(id)
       .then((response) => {
         setNombre(response.data.nombre);
         setDescripcion(response.data.descripcion);
-        setCategoria(response.data.categoria);
+        setCategoria(response.data.categoria.id);
         setPrecio(response.data.precio);
         setStock(response.data.stock);
       })
@@ -75,7 +98,6 @@ const AddProductoComponent = () => {
             <h2 className="text-center">{title()}</h2>
             <div className="card-body">
               <form>
-
                 <div className="form-group mb-2">
                   <label className="form-label">Nombre</label>
                   <input
@@ -87,7 +109,6 @@ const AddProductoComponent = () => {
                     onChange={(e) => setNombre(e.target.value)}
                   />
                 </div>
-
                 <div className="form-group mb-2">
                   <label className="form-label">Descripcion</label>
                   <input
@@ -99,19 +120,23 @@ const AddProductoComponent = () => {
                     onChange={(e) => setDescripcion(e.target.value)}
                   />
                 </div>
-
                 <div className="form-group mb-2">
                   <label className="form-label">Categoria</label>
-                  <input
-                    type="text"
-                    placeholder="Categoria"
+                  <select
                     name="categoria"
                     className="form-control"
                     value={categoria}
                     onChange={(e) => setCategoria(e.target.value)}
-                  />
+                  >
+                    <option value="">Selecciona una categoria</option>
+                    {categorias &&
+                      categorias.map((categoria) => (
+                        <option key={categoria.id} value={categoria.id}>
+                          {categoria.descripcion}
+                        </option>
+                      ))}
+                  </select>
                 </div>
-
                 <div className="form-group mb-2">
                   <label className="form-label">Precio</label>
                   <input
@@ -123,11 +148,10 @@ const AddProductoComponent = () => {
                     onChange={(e) => setPrecio(e.target.value)}
                   />
                 </div>
-
                 <div className="form-group mb-2">
                   <label className="form-label">Stock</label>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Stock"
                     name="stock"
                     className="form-control"
@@ -135,14 +159,13 @@ const AddProductoComponent = () => {
                     onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
-
                 <button
                   className="btn btn-success"
                   onClick={(e) => saveorUpdateProducto(e)}
                 >
                   {addOrUpdate()}
                 </button>
-                &nbsp;&nbsp;
+                &nbsp;
                 <Link to="/productos" className="btn btn-danger">
                   Cancelar
                 </Link>

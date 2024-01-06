@@ -5,7 +5,7 @@ const FooterComponent = () => {
     <div>
       <footer className="footer">
         <p className="texto">
-          Sistema desarrollado por
+          Sistema de ventas desarrollado por
           <a href="https://jampibryan.github.io/jampibryan/" target="_blank"> jampibryan</a>
         </p>
       </footer>
